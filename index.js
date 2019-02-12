@@ -23,7 +23,7 @@ const usePromise = (promise) => {
     ) {
       promiseRef.current = promise;
     } else {
-      throw new Error(`expected a promise but got: ${promise}`);
+      throw new Error(`expected a promise but got: ${typeof promise}`);
     }
   }
 
