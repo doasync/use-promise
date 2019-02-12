@@ -10,7 +10,7 @@ const { useRef, useEffect, useReducer } = React;
 const getPayload = (_, payload) => payload;
 const defaultState = [undefined, null, true];
 
-export const usePromise = (promise) => {
+const usePromise = (promise) => {
   const promiseRef = useRef(null);
 
   const [state, setState] = useReducer(getPayload, defaultState);
@@ -53,4 +53,8 @@ export const usePromise = (promise) => {
   }
 
   return state;
+};
+
+module.exports = {
+  usePromise,
 };
