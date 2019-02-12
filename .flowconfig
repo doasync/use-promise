@@ -1,0 +1,29 @@
+[ignore]
+<PROJECT_ROOT>/.vscode
+<PROJECT_ROOT>/.idea
+<PROJECT_ROOT>/.temp
+<PROJECT_ROOT>/coverage
+<PROJECT_ROOT>/docker
+<PROJECT_ROOT>/webpack
+<PROJECT_ROOT>/dist
+
+[include]
+
+[libs]
+
+[lints]
+all=warn
+
+[declarations]
+
+[options]
+emoji=true
+include_warnings=true
+module.use_strict=true
+module.file_ext=.js
+module.file_ext=.json
+module.name_mapper='^~/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
+suppress_type=$FlowFixMe
