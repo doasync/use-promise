@@ -1,7 +1,7 @@
 {
   "name": "use-promise",
   "description": "usePromise React hook",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": {
     "name": "DoAsync",
     "email": "doasync@gmail.com"
@@ -11,10 +11,6 @@
     "react": "^16.8.1"
   },
   "devDependencies": {
-    "babel-jest": "^24.1.0",
-    "jest": "^24.1.0",
-    "react-dom": "^16.8.1",
-    "react-testing-library": "^5.8.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
@@ -22,6 +18,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.1.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-import-resolver-webpack": "^0.11",
@@ -40,7 +37,10 @@
     "flow-coverage-report": "^0.6.1",
     "flow-typed": "^2.5.1",
     "graphql": "^0.13.0",
+    "jest": "^24.1.0",
     "prettier": "^1.16.4",
+    "react-dom": "^16.8.1",
+    "react-testing-library": "^5.8.0",
     "typescript": "^3.3.3",
     "webpack": "^4.29.3"
   },
