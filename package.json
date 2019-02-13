@@ -1,7 +1,7 @@
 {
   "name": "use-promise",
   "description": "usePromise React hook",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": {
     "name": "DoAsync",
     "email": "doasync@gmail.com"
