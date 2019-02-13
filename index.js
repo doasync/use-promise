@@ -1,27 +1,19 @@
-const React = require('react');
+/* eslint-disable promise/always-return */
 
-const { useRef, useEffect, useReducer } = React;
+const { useRef, useState, useEffect } = require('react');
 
-/**
- * Use a promise and receive [data, error, pending] values.
- * Do not forget to memoize the argument
- */
-
-const getPayload = (_, payload) => payload;
+const isPromise = x => x !== null && typeof x === 'object' && typeof x.then === 'function';
 const defaultState = [undefined, null, true];
 
 const usePromise = (promise) => {
-  const promiseRef = useRef(null);
+  const self = useRef({ state: defaultState }).current;
+  const [, pushState] = useState();
 
-  const [state, setState] = useReducer(getPayload, defaultState);
-
-  if (promise !== promiseRef.current) {
-    if (
-      promise !== null
-      && typeof promise === 'object'
-      && typeof promise.then === 'function'
-    ) {
-      promiseRef.current = promise;
+  if (promise !== self.promise) {
+    if (isPromise(promise)) {
+      self.promise = promise;
+      const cache = typeof promise.cache === 'function' ? promise.cache() : promise.cache;
+      self.state = cache ? [cache, null, false] : defaultState;
     } else {
       throw new Error(`expected a promise but got: ${typeof promise}`);
     }
@@ -29,30 +21,29 @@ const usePromise = (promise) => {
 
   useEffect(
     () => {
-      let canceled = false;
+      let inUse = true;
 
       if (!promise.cache) {
         promise
-          .then(result => !canceled && setState([result, null, false]))
-          .catch(error => !canceled && setState([undefined, error, false]));
+          .then((result) => {
+            self.state = [result, null, false];
+            if (inUse) pushState(self.state);
+          })
+          .catch((error) => {
+            self.state = [undefined, error, false];
+            if (inUse) pushState(self.state);
+          });
       }
 
       return () => {
-        if (state !== defaultState) {
-          setState(defaultState);
-        }
-        canceled = true;
+        self.state = defaultState;
+        inUse = false;
       };
     },
     [promise],
   );
 
-  // Use cache getter if available
-  if (promise.cache) {
-    return [promise.cache(), null, false];
-  }
-
-  return state;
+  return self.state;
 };
 
 module.exports = {
