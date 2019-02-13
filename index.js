@@ -21,23 +21,23 @@ const usePromise = (promise) => {
 
   useEffect(
     () => {
-      let inUse = true;
+      let isValid = true;
 
       if (!promise.cache) {
         promise
           .then((result) => {
             self.state = [result, null, false];
-            if (inUse) pushState(self.state);
+            if (isValid) pushState(self.state);
           })
           .catch((error) => {
             self.state = [undefined, error, false];
-            if (inUse) pushState(self.state);
+            if (isValid) pushState(self.state);
           });
       }
 
       return () => {
         self.state = defaultState;
-        inUse = false;
+        isValid = false;
       };
     },
     [promise],
