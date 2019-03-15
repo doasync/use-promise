@@ -1,51 +1,44 @@
-/* eslint-disable promise/always-return */
+import { useReducer, useEffect } from "react";
 
-const { useRef, useState, useEffect } = require('react');
+type State<T> = [T | null, Error | null, boolean];
 
-const isPromise = x => x !== null && typeof x === 'object' && typeof x.then === 'function';
-const defaultState = [undefined, null, true];
+type Action<T> =
+  | { type: "resolved", value: T }
+  | { type: "rejected", error: Error };
 
-const usePromise = (promise) => {
-  const self = useRef({ state: defaultState }).current;
-  const [, pushState] = useState();
-
-  if (promise !== self.promise) {
-    if (isPromise(promise)) {
-      self.promise = promise;
-      const cache = typeof promise.cache === 'function' ? promise.cache() : promise.cache;
-      self.state = cache ? [cache, null, false] : defaultState;
-    } else {
-      throw new Error(`expected a promise but got: ${typeof promise}`);
+function reducer<T>(state: State<T>, action: Action<T>): State<T> {
+  switch (action.type) {
+    case "resolved": {
+      return [action.value, null, true];
+    }
+    case "rejected": {
+      return [null, action.error, true];
+    }
+    default: {
+      throw new Error(`Unexpected action type ${action.type}`);
     }
   }
+}
 
-  useEffect(
-    () => {
-      let isValid = true;
-
-      if (!promise.cache) {
-        promise
-          .then((result) => {
-            self.state = [result, null, false];
-            if (isValid) pushState(self.state);
-          })
-          .catch((error) => {
-            self.state = [undefined, error, false];
-            if (isValid) pushState(self.state);
-          });
-      }
-
-      return () => {
-        self.state = defaultState;
-        isValid = false;
-      };
-    },
-    [promise],
-  );
-
-  return self.state;
-};
-
-module.exports = {
-  usePromise,
-};
+/**
+ * A simple [React Hook]{@link https://reactjs.org/docs/hooks-intro.html} for
+ * using Promise values in React render
+ * @example
+ * const [result, error, settled] = usePromise(() => Promise.resolve(1), [])
+ * // First render
+ * // settled === false, result === null, error === null
+ * // Second render
+ * // settled === true, result === 1, error === null
+ */
+export default function usePromise<T>(
+  promiseCreator: () => Promise<T>,
+  deps?: Array<*>
+): State<T> {
+  const [state, dispatch] = useReducer(reducer, [null, null, false]);
+  useEffect(() => {
+    const promise = promiseCreator();
+    promise.then(value => dispatch({ type: "resolved", value }));
+    promise.catch(error => dispatch({ type: "rejected", error }));
+  }, deps);
+  return state;
+}
